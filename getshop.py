@@ -2,8 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 
 def list():
-    from keys import API_KEY
-    options = requests.get(API_KEY)
+    from keys import web_key
+    options = requests.get(web_key())
     with open('test.html', 'w') as file:
         file.write(options.text)
     soup = BeautifulSoup(options.text, 'html.parser')
@@ -11,6 +11,7 @@ def list():
 
     items = soup.find_all(class_='slackey css-ydmcwf')
 
+    current_tickets = soup.find_all(class_='gaegu css-4j6pzy')
 
     tickets = soup.find_all(class_='gaegu css-r6e9ao')
 
@@ -24,12 +25,12 @@ def list():
 
     image_urls = [image['src'] for image in images]
 
-    print(item_names)
-    print(ticket_values)
-    print(image_urls)
+    #print(item_names)
+    #print(ticket_values)
+    #print(image_urls)
 
-    for i in range(len(tickets)):
-        print("Name: "+str(item_names[i])+"| Tickets: "+str(tickets[i].get_text())+"| Image URL: "+str(image_urls[i]))
+    #for i in range(len(tickets)):
+    #    print("Name: "+str(item_names[i])+"| Tickets: "+str(tickets[i].get_text())+"| Image URL: "+str(image_urls[i]))
 
-    return item_names, ticket_values, image_urls
+    return item_names, ticket_values, image_urls, current_tickets
 list()
