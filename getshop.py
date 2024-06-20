@@ -1,9 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+import os
 
 def list():
-    from keys import web_key
-    options = requests.get(web_key())
+    load_dotenv()
+    #define web_key as a .env file with a link to your hack club shop!
+    web_key = os.getenv('SHOP_URL')
+    options = requests.get(web_key)
     with open('test.html', 'w') as file:
         file.write(options.text)
     soup = BeautifulSoup(options.text, 'html.parser')
