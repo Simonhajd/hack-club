@@ -15,8 +15,19 @@ import re
 def main_ui():
     from getshop import list
     window = Tk() 
+
+    
+    # Make the root window always on top
+    window.wm_attributes("-topmost", True)
+    # Turn off the window shadow
+    window.wm_attributes("-transparent", True)
+    # Set the root window background color to a transparent color
+    window.config(bg='systemTransparent')
+    window.attributes("-alpha", 0.95)  # Set the window to 50% transparency
+
+
     window.geometry('500x500') 
-    window.config(bg = "#a1dbcd")
+    
     item_names, ticket_values, image_urls, current_tickets = list()
     print(item_names)
     print(ticket_values)
@@ -30,6 +41,11 @@ def main_ui():
 
     listbox.pack(expand = YES, fill = "both") 
     
+    pending_tickets_label = Label(window, text="Tickets pending: ")
+    pending_tickets_label.pack()
+    pendingtickets = Spinbox(window, from_=0, to=365, width=10, relief="sunken", bd=1, bg="white", fg="black", font=("Arial", 12))
+    pendingtickets.pack()
+
     missed_days_label = Label(window, text="Est. days to be missed: ")
     missed_days_label.pack()
 
@@ -50,6 +66,7 @@ def main_ui():
         print("Selected: "+str(selected_indices))
         total=0
         missed_days = int(misseddays.get())
+        pending_tickets = int(pendingtickets.get())
         today = datetime.date.today()
         future = datetime.date(2024,8,31)
         diff = future - today
@@ -60,6 +77,7 @@ def main_ui():
         print(("\n")*100)
         print("Total: "+ str(total))
         print("Num tickets: "+ str(num_tickets))
+        print("Pending tickets: "+ str(pending_tickets))
         print("Difference: "+ str(diff.days))
         print("Missed days: "+ str(missed_days))
         print("-------")
@@ -68,7 +86,7 @@ def main_ui():
         
         print("Required tickets: "+ str((total-num_tickets)))
         
-        total_label.config(text=("Total: " + str(total)+ "\n"+ "Days left: " + str(diff.days))+ "\n"+ "Average tickets per day needed: " + str(((total-num_tickets)/(diff.days-missed_days))) + "\n" + "You are at: " + str(num_tickets) + " tickets")
+        total_label.config(text=("Total: " + str(total) + "\n" + "Days left: " + str(diff.days) + "\n" + "Average tickets per day needed: " + str((total - (num_tickets + pending_tickets)) / max(diff.days - missed_days, 1)) + "\n" + "You are at: " + str(num_tickets) + " tickets"))
     
 
     calculate_button = Button(window, text="Calculate Total", command=calculate_total)
